@@ -13,11 +13,13 @@ export class PrismaPostsRepository implements PostsRepository {
   }
 
   async findByPublicId(publicId: string) {
-    return prisma.post.findUnique({
-      where: { public_id: publicId },
-    })
-  }
-
+  return prisma.post.findUnique({
+    where: { public_id: publicId },
+    include: {
+      usuario: true,
+    },
+  })
+}
   async findManyByUserId(userId: number) {
     return prisma.post.findMany({
       where: { usuarioId: userId },

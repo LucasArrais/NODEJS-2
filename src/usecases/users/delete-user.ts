@@ -1,8 +1,11 @@
 import type { UsersRepository } from '@/repositories/users-repository.js'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error.js'
+import { UnauthorizedError } from '../errors/unauthorized-error.js'
 
 interface DeleteUserUseCaseRequest {
   publicId: string
+  requesterId: string
+  requesterRole: 'ADMIN' | 'DEFAULT'
 }
 
 export class DeleteUserUseCase {
@@ -10,13 +13,24 @@ export class DeleteUserUseCase {
 
   async execute({
     publicId,
-  }: DeleteUserUseCaseRequest) {
-    const user = await this.usersRepository.findBy({ public_id: publicId })
+    requesterId,
+    requesterRole,
+  }: DeleteUserUseCaseRequest): Promise<void> {
+
+    const user = await this.usersRepository.findByPublicId(publicId)
 
     if (!user) {
       throw new ResourceNotFoundError()
     }
 
-    await this.usersRepository.delete(user.id)
+    // Regra de autorização agora está no lugar certo
+    if (
+      requesterRole !== 'ADMIN' &&
+      requesterId !== publicId
+    ) {
+      throw new UnauthorizedError()
+    }
+
+    await this.usersRepository.delete(publicId)
   }
 }

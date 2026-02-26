@@ -24,11 +24,10 @@ export class PrismaUsersRepository implements UsersRepository {
     return await prisma.user.findMany()
   }
 
-  async delete(id: number) {
-    await prisma.user.delete({
-      where: { id },
-    })
-
+  async delete(publicId: string) {
+  await prisma.user.delete({
+    where: { public_id: publicId },
+  })
 }
   async update(id: number, data: Prisma.UserUpdateInput) {
     return await prisma.user.update({
@@ -36,4 +35,11 @@ export class PrismaUsersRepository implements UsersRepository {
       data,
     })
 }
+
+  async findByPublicId(publicId: string) {
+    return prisma.user.findUnique({
+      where: { public_id: publicId },
+  })
+}
+
 }
