@@ -3,6 +3,7 @@ import { appRoutes } from './http/controllers/routes.js'
 import fastifyJwt from '@fastify/jwt'
 import { ZodError } from 'zod'
 import {env} from './env/index.js'
+import { commentsRoutes } from './http/controllers/comments/comments.routes.js'
 
 export const app = fastify()
 
@@ -11,6 +12,8 @@ app.register(fastifyJwt,{
 }) 
 
 app.register(appRoutes)
+
+app.register(commentsRoutes, { prefix: '/comments' })
 
 app.setErrorHandler((error, _request, reply) => {
     if (error instanceof ZodError) {
