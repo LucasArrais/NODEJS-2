@@ -5,6 +5,7 @@ import { get } from './get-posts.controller.js'
 import { update } from './update-post.controller.js'
 import { remove } from './delete-post.controller.js'
 import { verifyJWT } from '@/http/middlewares/verify-jwt.js'
+import { listPostsByUserController } from './list-posts-by-user.controller.js'
 
 export async function postRoutes(app: FastifyInstance) {
   app.post('/', { onRequest: [verifyJWT] }, create)
@@ -12,4 +13,5 @@ export async function postRoutes(app: FastifyInstance) {
   app.get('/:publicId', get)
   app.patch('/:publicId', { onRequest: [verifyJWT] }, update)
   app.delete('/:publicId', { onRequest: [verifyJWT] }, remove)
+  app.get('/user/:userPublicId', listPostsByUserController)
 }

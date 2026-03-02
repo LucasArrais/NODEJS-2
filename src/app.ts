@@ -2,8 +2,8 @@ import fastify from 'fastify'
 import { appRoutes } from './http/controllers/routes.js'
 import fastifyJwt from '@fastify/jwt'
 import { ZodError } from 'zod'
-import {env} from './env/index.js'
-import { commentsRoutes } from './http/controllers/comments/comments.routes.js'
+import { env } from './env/index.js'
+import { ResourceNotFoundError } from './usecases/errors/resource-not-found-error.js'
 
 export const app = fastify()
 
@@ -13,20 +13,19 @@ app.register(fastifyJwt,{
 
 app.register(appRoutes)
 
-app.register(commentsRoutes, { prefix: '/comments' })
-
 app.setErrorHandler((error, _request, reply) => {
-    if (error instanceof ZodError) {
-        return reply.status(400).send({
-            message: 'Validation error',
-            issues: error.format(),
-        })
-    }
+  console.log(error)
 
-    if (error instanceof SyntaxError) {
-        return reply.status(400).send({ message: 'Syntax error in request body' })
-    }
+  if (error instanceof ZodError) {
+    return reply.status(400).send({
+      message: 'Validation error',
+      issues: error.format(),
+    })
+  }
 
-    return reply.status(500).send({ message: 'Internal Server Error' })
+  if (error instanceof ResourceNotFoundError) {
+    return reply.status(404).send({ message: error.message })
+  }
+
+  return reply.status(500).send({ message: 'Internal Server Error' })
 })
-

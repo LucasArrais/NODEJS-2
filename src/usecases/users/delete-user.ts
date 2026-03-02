@@ -23,7 +23,6 @@ export class DeleteUserUseCase {
       throw new ResourceNotFoundError()
     }
 
-    // Regra de autorização agora está no lugar certo
     if (
       requesterRole !== 'ADMIN' &&
       requesterId !== publicId

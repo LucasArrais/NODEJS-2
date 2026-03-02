@@ -3,7 +3,7 @@ import {register} from './register.controller.js'
 import { get } from './get-user.controller.js'
 import { list } from './list-users.controller.js'
 import { update } from './update-user.controller.js'
-import { listByUser } from '../posts/list-posts-by-user.controller.js'
+import { listPostsByUserController } from '../posts/list-posts-by-user.controller.js'
 import { authenticate } from './authenticate.controller.js'
 import { verifyJWT } from '@/http/middlewares/verify-jwt.js'
 import { verifyUserRole } from '@/http/middlewares/verify-user-role.js'
@@ -23,7 +23,7 @@ export async function userRoutes(app: FastifyInstance) {
     app.delete('/:publicId', { onRequest: [verifyJWT] }, deleteUser)
     app.patch('/:publicId', { onRequest: [verifyJWT] }, update)
 
-    app.get('/:publicId/posts', listByUser)
+    app.get('/:publicId/posts', listPostsByUserController)
 
     app.post('/authenticate', authenticate)
     

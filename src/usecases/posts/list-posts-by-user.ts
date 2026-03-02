@@ -1,34 +1,29 @@
-import type { Post } from '@/@types/prisma/client.js'
-import type { PostsRepository } from '@/repositories/posts-repository.js'
-import type { UsersRepository } from '@/repositories/users-repository.js'
-import { ResourceNotFoundError } from '../errors/resource-not-found-error.js'
+import { prisma } from '@/libs/prisma.js'
 
-interface Request {
+interface ListPostsByUserRequest {
   userPublicId: string
 }
 
-interface Response {
-  posts: Post[]
-}
-
 export class ListPostsByUserUseCase {
-  constructor(
-    private postsRepository: PostsRepository,
-    private usersRepository: UsersRepository,
-  ) {}
-
-  async execute({ userPublicId }: Request): Promise<Response> {
-
-    const user = await this.usersRepository.findBy({
-      public_id: userPublicId,
+  async execute({ userPublicId }: ListPostsByUserRequest) {
+    const user = await prisma.user.findUnique({
+      where: { public_id: userPublicId }
     })
 
     if (!user) {
-      throw new ResourceNotFoundError()
+      throw new Error('Usuário não encontrado')
     }
 
-    const posts = await this.postsRepository.findManyByUserId(user.id)
+    const posts = await prisma.post.findMany({
+      where: { usuarioId: user.id },
+      orderBy: {
+        created_at: 'desc'
+      }
+    })
 
-    return { posts }
+    return {
+      posts,
+      total: posts.length
+    }
   }
 }
