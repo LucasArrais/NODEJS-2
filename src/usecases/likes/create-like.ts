@@ -38,8 +38,9 @@ export class CreateLikeUseCase {
       throw new ResourceNotFoundError()
     }
 
-    let postId: number | undefined
-    let commentId: number | undefined
+    let postId: number | null = null
+    let commentId: number | null = null
+    
     if (postPublicId) {
       const post = await this.postsRepository.findByPublicId(postPublicId)
 
@@ -49,6 +50,7 @@ export class CreateLikeUseCase {
 
       postId = post.id
     }
+    
     if (commentPublicId) {
       const comment = await this.commentsRepository.findByPublicId(commentPublicId)
 
@@ -58,21 +60,26 @@ export class CreateLikeUseCase {
 
       commentId = comment.id
     }
-
-    const alreadyExists = await this.likesRepository.findByUserAndTarget(
-      user.id,
+    const alreadyExists = await this.likesRepository.findByUserAndTarget({
+      userId: user.id,
       postId,
-      commentId
-    )
+      commentId,
+    })
 
     if (alreadyExists) {
       throw new Error('Like already exists')
     }
 
     const like = await this.likesRepository.create({
-      usuarioId: user.id,
-      postId,
-      commentId,
+      usuario: {
+        connect: { id: user.id }
+      },
+      ...(postId && { 
+        post: { connect: { id: postId } }
+      }),
+      ...(commentId && { 
+        comment: { connect: { id: commentId } }
+      }),
     })
 
     return { like }
