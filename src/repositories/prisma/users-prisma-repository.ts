@@ -1,45 +1,59 @@
-import type { Prisma } from '@/@types/prisma/client.js'
-import type { UsersRepository } from '../users-repository.js'
 import { prisma } from '@/libs/prisma.js'
+import type { Prisma } from "@/@types/prisma/client.js";
+import type { UsersRepository } from '@/repositories/users-repository.js';
 
 export class PrismaUsersRepository implements UsersRepository {
-
   async create(data: Prisma.UserCreateInput) {
-    return await prisma.user.create({ data })
+    const user = await prisma.user.create({
+      data
+    })
+    return user
   }
 
   async findByEmail(email: string) {
-    return await prisma.user.findFirst({
-      where: { email },
+    const user = await prisma.user.findUnique({
+      where: { email }
     })
+    return user
   }
 
   async findBy(where: Prisma.UserWhereInput) {
-    return await prisma.user.findFirst({
-      where,
+    const user = await prisma.user.findFirst({
+      where
     })
+    return user
   }
 
-  async list(){
-    return await prisma.user.findMany()
+  async list() {
+    const users = await prisma.user.findMany()
+    return users
   }
 
   async delete(publicId: string) {
-  await prisma.user.delete({
-    where: { public_id: publicId },
-  })
-}
-  async update(id: number, data: Prisma.UserUpdateInput) {
-    return await prisma.user.update({
-      where: { id },
-      data,
+    await prisma.user.delete({
+      where: { public_id: publicId }
     })
-}
+  }
+
+  async update(id: number, data: Prisma.UserUpdateInput) {
+    const user = await prisma.user.update({
+      where: { id },
+      data
+    })
+    return user
+  }
 
   async findByPublicId(publicId: string) {
-    return prisma.user.findUnique({
-      where: { public_id: publicId },
-  })
-}
+    const user = await prisma.user.findUnique({
+      where: { public_id: publicId }
+    })
+    return user
+  }
 
+  async findById(id: number) {
+    const user = await prisma.user.findUnique({
+      where: { id }
+    })
+    return user
+  }
 }

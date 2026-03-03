@@ -8,19 +8,18 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   const createPostBodySchema = z.object({
     titulo: z.string().min(1),
     conteudo: z.string().min(1),
-    userPublicId: z.string(),
   })
 
-  const { titulo, conteudo, userPublicId } =
+  const { titulo, conteudo } =
     createPostBodySchema.parse(request.body)
 
   try {
     const createPostUseCase = makeCreatePostUseCase()
-
+    console.log('User ID from JWT:', request.user.sub) 
     const { post } = await createPostUseCase.execute({
       titulo,
       conteudo,
-      userPublicId,
+      userPublicId: request.user.sub,
     })
 
     return reply.status(201).send(post)

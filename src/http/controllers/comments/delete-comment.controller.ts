@@ -1,9 +1,10 @@
+import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
+import { UnauthorizedError } from '@/usecases/errors/unauthorized-error.js'
+import { makeDeleteCommentUseCase } from '@/usecases/factories/make-delete-comment.js'
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import z from 'zod'
-import { makeDeleteCommentUseCase } from '@/usecases/factories/make-delete-comment.js'
-import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 
-export async function remove(
+export async function deleteCommentController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
@@ -22,21 +23,26 @@ export async function remove(
     const deleteCommentUseCase = makeDeleteCommentUseCase()
 
     await deleteCommentUseCase.execute({
-      publicId,
-      requesterPublicId: loggedUser.sub,
+      commentPublicId: publicId,
+      requesterId: loggedUser.sub,
       requesterRole: loggedUser.role,
     })
 
     return reply.status(204).send()
+
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: 'Comment not found' })
     }
 
-    if (error instanceof Error && error.message === 'Forbidden') {
+    if (error instanceof UnauthorizedError) {
       return reply.status(403).send({ message: 'Forbidden' })
     }
 
-    throw error
+    if (error instanceof z.ZodError) {
+      return reply.status(400).send({ message: 'Invalid params', issues: error.issues })
+    }
+
+    return reply.status(500).send({ message: 'Internal server error' })
   }
 }

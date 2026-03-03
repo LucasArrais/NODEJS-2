@@ -1,9 +1,8 @@
 import type { UsersRepository } from '@/repositories/users-repository.js'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error.js'
-import { UnauthorizedError } from '../errors/unauthorized-error.js'
 
 interface DeleteUserUseCaseRequest {
-  publicId: string
+  userPublicId: string
   requesterId: string
   requesterRole: 'ADMIN' | 'DEFAULT'
 }
@@ -12,24 +11,22 @@ export class DeleteUserUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
   async execute({
-    publicId,
+    userPublicId,
     requesterId,
     requesterRole,
   }: DeleteUserUseCaseRequest): Promise<void> {
 
-    const user = await this.usersRepository.findByPublicId(publicId)
+    const user = await this.usersRepository.findByPublicId(userPublicId)
 
     if (!user) {
       throw new ResourceNotFoundError()
     }
 
-    if (
-      requesterRole !== 'ADMIN' &&
-      requesterId !== publicId
-    ) {
+    if (requesterRole !== 'ADMIN' && requesterId !== userPublicId) {
+      const { UnauthorizedError } = await import('../errors/unauthorized-error.js')
       throw new UnauthorizedError()
     }
 
-    await this.usersRepository.delete(publicId)
+    await this.usersRepository.delete(userPublicId)
   }
 }

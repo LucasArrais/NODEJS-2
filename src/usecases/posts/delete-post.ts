@@ -1,46 +1,40 @@
 import type { PostsRepository } from '@/repositories/posts-repository.js'
+import type { UsersRepository } from '@/repositories/users-repository.js'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error.js'
 import { UnauthorizedError } from '../errors/unauthorized-error.js'
 
 interface DeletePostUseCaseRequest {
-  publicId: string
+  postPublicId: string
   requesterId: string
   requesterRole: 'ADMIN' | 'DEFAULT'
 }
 
 export class DeletePostUseCase {
-  constructor(private postsRepository: PostsRepository) {}
+  constructor(
+    private postsRepository: PostsRepository,
+    private usersRepository: UsersRepository
+  ) {}
 
   async execute({
-    publicId,
+    postPublicId,
     requesterId,
     requesterRole,
   }: DeletePostUseCaseRequest): Promise<void> {
 
-    console.log(' DELETE POST USE CASE EXECUTANDO')
-    console.log('PublicId recebido:', publicId)
-
-    const post = await this.postsRepository.findByPublicId(publicId)
-
-    console.log(' POST RETORNADO DO REPOSITORY:', post)
+    const post = await this.postsRepository.findByPublicId(postPublicId)
 
     if (!post) {
       throw new ResourceNotFoundError()
     }
 
-    console.log(' Usuário logado:', requesterId)
-    console.log(' Dono do post:', post.usuario?.public_id)
-
-    if (
-      requesterRole !== 'ADMIN' &&
-      post.usuario?.public_id !== requesterId
-    ) {
-      console.log('NÃO AUTORIZADO')
-      throw new UnauthorizedError()
+    if (requesterRole !== 'ADMIN') {
+      const user = await this.usersRepository.findByPublicId(requesterId)
+      
+      if (!user || post.usuarioId !== user.id) {
+        throw new UnauthorizedError()
+      }
     }
 
-    console.log('AUTORIZADO — DELETANDO POST')
-
-    await this.postsRepository.delete(publicId)
+    await this.postsRepository.delete(postPublicId)
   }
 }

@@ -1,56 +1,63 @@
 import { prisma } from '@/libs/prisma.js'
-import type { Prisma, Like } from '@/@types/prisma/client.js'
-import type { LikesRepository } from '../likes-repository.js'
+import type { Prisma } from "@/@types/prisma/client.js";
+import type { LikesRepository, FindByUserAndTargetParams } from '../likes-repository.js'
 
 export class PrismaLikesRepository implements LikesRepository {
-
-  async create(data: Prisma.LikeUncheckedCreateInput): Promise<Like> {
-    return prisma.like.create({
-      data,
-    })
+  async create(data: Prisma.LikeCreateInput) {
+    return prisma.like.create({ data })
   }
 
-  async findByPublicId(publicId: string): Promise<Like | null> {
-    return prisma.like.findUnique({
-      where: { public_id: publicId },
-    })
-  }
-
-  async findByUserAndTarget(
-    userId: number,
-    postId?: number,
-    commentId?: number
-  ): Promise<Like | null> {
+  async findByUserAndTarget({ userId, postId, commentId }: FindByUserAndTargetParams) {
     return prisma.like.findFirst({
       where: {
         usuarioId: userId,
-        postId: postId ?? undefined,
-        commentId: commentId ?? undefined,
+        ...(postId !== undefined && { postId }),
+        ...(commentId !== undefined && { commentId }),
       },
     })
   }
 
-  async listByUser(userId: number): Promise<Like[]> {
-    return prisma.like.findMany({
-      where: { usuarioId: userId },
-    })
-  }
-
-  async listByPost(postId: number): Promise<Like[]> {
+  async findManyByPostId(postId: number) {
     return prisma.like.findMany({
       where: { postId },
+      include: {
+        usuario: true,
+      },
     })
   }
 
-  async listByComment(commentId: number): Promise<Like[]> {
+  async findManyByCommentId(commentId: number) {
     return prisma.like.findMany({
       where: { commentId },
+      include: {
+        usuario: true,
+      },
     })
   }
 
-  async delete(publicId: string): Promise<void> {
+  async findManyByUserId(userId: number) {
+    return prisma.like.findMany({
+      where: { usuarioId: userId },
+      include: {
+        post: true,
+        comment: true,
+      },
+    })
+  }
+
+  async delete(id: number) {
     await prisma.like.delete({
-      where: { public_id: publicId },
+      where: { id },
+    })
+  }
+
+  async deleteByUserAndTarget({ userId, postId, commentId }: FindByUserAndTargetParams) {
+    await prisma.like.deleteMany({
+      where: {
+        usuarioId: userId,
+        ...(postId !== undefined && { postId }),
+        ...(commentId !== undefined && { commentId }),
+      },
     })
   }
 }
