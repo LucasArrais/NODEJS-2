@@ -1,5 +1,5 @@
 export class UserAlrealdyExistsError extends Error {
-    constructor() {
-        super('Email already in use')
-    }
+  constructor() {
+    super('Email already in use')
+  }
 }

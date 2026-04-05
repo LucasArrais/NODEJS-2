@@ -7,7 +7,7 @@ async function main() {
         name: 'lucas',
         email: 'lucasduarte@email.com',
         password: '123456',
-        photo: null, 
+        photo: null,
       },
     })
 

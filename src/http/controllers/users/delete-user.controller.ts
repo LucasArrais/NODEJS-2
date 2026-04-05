@@ -1,10 +1,10 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 import { makeDeleteUserUseCase } from '@/usecases/factories/make-delete-user.js'
-import type { FastifyRequest, FastifyReply } from 'fastify'
 
 export async function deleteUserController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const loggedUser = request.user as {
@@ -21,7 +21,6 @@ export async function deleteUserController(
     })
 
     return reply.status(204).send()
-
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: 'User not found' })

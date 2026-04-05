@@ -12,7 +12,7 @@ interface DeletePostUseCaseRequest {
 export class DeletePostUseCase {
   constructor(
     private postsRepository: PostsRepository,
-    private usersRepository: UsersRepository
+    private usersRepository: UsersRepository,
   ) {}
 
   async execute({
@@ -20,7 +20,6 @@ export class DeletePostUseCase {
     requesterId,
     requesterRole,
   }: DeletePostUseCaseRequest): Promise<void> {
-
     const post = await this.postsRepository.findByPublicId(postPublicId)
 
     if (!post) {
@@ -29,7 +28,7 @@ export class DeletePostUseCase {
 
     if (requesterRole !== 'ADMIN') {
       const user = await this.usersRepository.findByPublicId(requesterId)
-      
+
       if (!user || post.usuarioId !== user.id) {
         throw new UnauthorizedError()
       }

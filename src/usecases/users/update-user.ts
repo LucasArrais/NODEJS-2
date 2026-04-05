@@ -1,8 +1,8 @@
+import { hash } from 'bcryptjs'
 import type { User } from '@/@types/prisma/client.js'
 import type { UsersRepository } from '@/repositories/users-repository.js'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error.js'
 import { UnauthorizedError } from '../errors/unauthorized-error.js'
-import { hash } from 'bcryptjs'
 
 interface UpdateUserUseCaseRequest {
   userPublicId: string
@@ -30,7 +30,6 @@ export class UpdateUserUseCase {
     password,
     photo,
   }: UpdateUserUseCaseRequest): Promise<UpdateUserUseCaseResponse> {
-
     const userToUpdate = await this.usersRepository.findByPublicId(userPublicId)
 
     if (!userToUpdate) {
@@ -42,11 +41,11 @@ export class UpdateUserUseCase {
     }
 
     const updateData: any = {}
-    
+
     if (name !== undefined) updateData.name = name
     if (email !== undefined) updateData.email = email
     if (photo !== undefined) updateData.photo = photo
-    
+
     if (password !== undefined) {
       updateData.password = await hash(password, 6)
     }
@@ -55,7 +54,10 @@ export class UpdateUserUseCase {
       return { user: userToUpdate }
     }
 
-    const updatedUser = await this.usersRepository.update(userToUpdate.id, updateData)
+    const updatedUser = await this.usersRepository.update(
+      userToUpdate.id,
+      updateData,
+    )
 
     return { user: updatedUser }
   }

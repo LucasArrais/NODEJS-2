@@ -7,7 +7,7 @@ interface ListPostsByUserRequest {
 export class ListPostsByUserUseCase {
   async execute({ userPublicId }: ListPostsByUserRequest) {
     const user = await prisma.user.findUnique({
-      where: { public_id: userPublicId }
+      where: { public_id: userPublicId },
     })
 
     if (!user) {
@@ -17,13 +17,13 @@ export class ListPostsByUserUseCase {
     const posts = await prisma.post.findMany({
       where: { usuarioId: user.id },
       orderBy: {
-        created_at: 'desc'
-      }
+        created_at: 'desc',
+      },
     })
 
     return {
       posts,
-      total: posts.length
+      total: posts.length,
     }
   }
 }

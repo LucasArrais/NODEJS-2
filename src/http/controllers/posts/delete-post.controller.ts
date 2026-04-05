@@ -1,17 +1,17 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+import z from 'zod'
 import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 import { UnauthorizedError } from '@/usecases/errors/unauthorized-error.js'
 import { makeDeletePostUseCase } from '@/usecases/factories/make-delete-post.js'
-import type { FastifyRequest, FastifyReply } from 'fastify'
-import z from 'zod'
 
 export async function deletePostController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     console.log('1 - Iniciando deletePostController')
     console.log('2 - Params:', request.params)
-    
+
     const paramsSchema = z.object({
       postId: z.string(),
     })
@@ -36,10 +36,9 @@ export async function deletePostController(
     console.log('6 - UseCase executado com sucesso')
 
     return reply.status(204).send()
-
   } catch (error) {
     console.log('❌ ERRO NO CONTROLLER:', error)
-    
+
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: 'Post not found' })
     }
@@ -49,7 +48,9 @@ export async function deletePostController(
     }
 
     if (error instanceof z.ZodError) {
-      return reply.status(400).send({ message: 'Invalid params', issues: error.issues })
+      return reply
+        .status(400)
+        .send({ message: 'Invalid params', issues: error.issues })
     }
 
     return reply.status(500).send({ message: 'Internal server error' })

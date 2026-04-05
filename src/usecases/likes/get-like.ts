@@ -12,22 +12,22 @@ export class GetLikeUseCase {
         usuario: {
           select: {
             public_id: true,
-            name: true
-          }
+            name: true,
+          },
         },
         post: {
           select: {
             public_id: true,
-            titulo: true
-          }
+            titulo: true,
+          },
         },
         comment: {
           select: {
             public_id: true,
-            conteudo: true
-          }
-        }
-      }
+            conteudo: true,
+          },
+        },
+      },
     })
 
     if (!like) {

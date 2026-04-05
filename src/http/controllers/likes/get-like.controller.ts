@@ -1,13 +1,13 @@
-import type { FastifyRequest, FastifyReply } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { makeGetLikeUseCase } from '@/usecases/factories/make-get-like.js'
 
 export async function getLikeController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const paramsSchema = z.object({
-    likeId: z.coerce.number()
+    likeId: z.coerce.number(),
   })
 
   const { likeId } = paramsSchema.parse(request.params)

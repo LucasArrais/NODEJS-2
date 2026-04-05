@@ -1,20 +1,22 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+import z from 'zod'
 import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 import { UnauthorizedError } from '@/usecases/errors/unauthorized-error.js'
 import { makeDeleteLikeUseCase } from '@/usecases/factories/make-delete-like.js'
-import type { FastifyRequest, FastifyReply } from 'fastify'
-import z from 'zod'
 
 export async function deleteLikeController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
-    const bodySchema = z.object({
-      postPublicId: z.string().optional(),
-      commentPublicId: z.string().optional(),
-    }).refine(data => data.postPublicId || data.commentPublicId, {
-      message: "É necessário fornecer postPublicId ou commentPublicId"
-    })
+    const bodySchema = z
+      .object({
+        postPublicId: z.string().optional(),
+        commentPublicId: z.string().optional(),
+      })
+      .refine((data) => data.postPublicId || data.commentPublicId, {
+        message: 'É necessário fornecer postPublicId ou commentPublicId',
+      })
 
     const { postPublicId, commentPublicId } = bodySchema.parse(request.body)
 
@@ -32,7 +34,6 @@ export async function deleteLikeController(
     })
 
     return reply.status(204).send()
-
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: 'Like not found' })
@@ -43,9 +44,9 @@ export async function deleteLikeController(
     }
 
     if (error instanceof z.ZodError) {
-      return reply.status(400).send({ 
-        message: 'Invalid data', 
-        issues: error.issues 
+      return reply.status(400).send({
+        message: 'Invalid data',
+        issues: error.issues,
       })
     }
 

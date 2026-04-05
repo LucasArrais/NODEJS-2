@@ -8,8 +8,9 @@
     "start:dev": "node --watch-path=./src --import tsx src/server.ts",
     "start:prod": "node build/server.js",
     "build": "tsup",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "prettier --check \"src/**/*.ts\""
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.10",
     "@fastify/jwt": "10.0.0",
     "@types/node": "25.3.0",
     "@types/pg": "8.16.0",

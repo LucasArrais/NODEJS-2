@@ -1,4 +1,4 @@
-import type { Prisma, Comment } from '@/@types/prisma/client.js'
+import type { Comment, Prisma } from '@/@types/prisma/client.js'
 
 export interface CommentsRepository {
   create(data: Prisma.CommentUncheckedCreateInput): Promise<Comment>
@@ -6,7 +6,7 @@ export interface CommentsRepository {
   findByPublicId(publicId: string): Promise<Comment | null>
 
   findByPublicIdWithUser(
-    publicId: string
+    publicId: string,
   ): Promise<(Comment & { usuario: { public_id: string } }) | null>
 
   list(): Promise<Comment[]>
@@ -15,27 +15,22 @@ export interface CommentsRepository {
 
   listByPost(postId: number): Promise<Comment[]>
 
-  update(
-    publicId: string,
-    data: Prisma.CommentUpdateInput
-  ): Promise<Comment>
+  update(publicId: string, data: Prisma.CommentUpdateInput): Promise<Comment>
 
   delete(publicId: string): Promise<void>
 
-  listWithRelations(
-  page: number
-  ): Promise<
-  {
-    public_id: string
-    conteudo: string
-    created_at: Date
-    usuario: {
+  listWithRelations(page: number): Promise<
+    {
       public_id: string
-      name: string
-    }
-    post: {
-      public_id: string
-    }
-  }[]
->
+      conteudo: string
+      created_at: Date
+      usuario: {
+        public_id: string
+        name: string
+      }
+      post: {
+        public_id: string
+      }
+    }[]
+  >
 }

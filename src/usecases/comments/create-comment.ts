@@ -1,7 +1,7 @@
-import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 import type { CommentsRepository } from '@/repositories/comments-repository.js'
-import type { UsersRepository } from '@/repositories/users-repository.js'
 import type { PostsRepository } from '@/repositories/posts-repository.js'
+import type { UsersRepository } from '@/repositories/users-repository.js'
+import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 
 interface CreateCommentUseCaseRequest {
   conteudo: string
@@ -13,7 +13,7 @@ export class CreateCommentUseCase {
   constructor(
     private commentsRepository: CommentsRepository,
     private usersRepository: UsersRepository,
-    private postsRepository: PostsRepository
+    private postsRepository: PostsRepository,
   ) {}
 
   async execute({

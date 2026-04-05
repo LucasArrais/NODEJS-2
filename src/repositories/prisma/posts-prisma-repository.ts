@@ -1,9 +1,8 @@
 import type { Prisma } from '@/@types/prisma/client.js'
-import type { PostsRepository } from '../posts-repository.js'
 import { prisma } from '@/libs/prisma.js'
+import type { PostsRepository } from '../posts-repository.js'
 
 export class PrismaPostsRepository implements PostsRepository {
-
   async create(data: Prisma.PostCreateInput) {
     return prisma.post.create({ data })
   }
@@ -13,13 +12,13 @@ export class PrismaPostsRepository implements PostsRepository {
   }
 
   async findByPublicId(publicId: string) {
-  return prisma.post.findUnique({
-    where: { public_id: publicId },
-    include: {
-      usuario: true,
-    },
-  })
-}
+    return prisma.post.findUnique({
+      where: { public_id: publicId },
+      include: {
+        usuario: true,
+      },
+    })
+  }
   async findManyByUserId(userId: number) {
     return prisma.post.findMany({
       where: { usuarioId: userId },

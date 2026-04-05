@@ -19,7 +19,7 @@ interface UpdatePostUseCaseResponse {
 export class UpdatePostUseCase {
   constructor(
     private postsRepository: PostsRepository,
-    private usersRepository: UsersRepository
+    private usersRepository: UsersRepository,
   ) {}
 
   async execute({
@@ -29,7 +29,6 @@ export class UpdatePostUseCase {
     titulo,
     conteudo,
   }: UpdatePostUseCaseRequest): Promise<UpdatePostUseCaseResponse> {
-
     const post = await this.postsRepository.findByPublicId(postPublicId)
 
     if (!post) {
@@ -38,7 +37,7 @@ export class UpdatePostUseCase {
 
     if (requesterRole !== 'ADMIN') {
       const user = await this.usersRepository.findByPublicId(requesterId)
-      
+
       if (!user || post.usuarioId !== user.id) {
         throw new UnauthorizedError()
       }
@@ -52,7 +51,10 @@ export class UpdatePostUseCase {
     if (titulo !== undefined) updateData.titulo = titulo
     if (conteudo !== undefined) updateData.conteudo = conteudo
 
-    const updatedPost = await this.postsRepository.update(postPublicId, updateData)
+    const updatedPost = await this.postsRepository.update(
+      postPublicId,
+      updateData,
+    )
 
     return { post: updatedPost }
   }

@@ -1,13 +1,20 @@
+import type { Prisma } from '@/@types/prisma/client.js'
 import { prisma } from '@/libs/prisma.js'
-import type { Prisma } from "@/@types/prisma/client.js";
-import type { LikesRepository, FindByUserAndTargetParams } from '../likes-repository.js'
+import type {
+  FindByUserAndTargetParams,
+  LikesRepository,
+} from '../likes-repository.js'
 
 export class PrismaLikesRepository implements LikesRepository {
   async create(data: Prisma.LikeCreateInput) {
     return prisma.like.create({ data })
   }
 
-  async findByUserAndTarget({ userId, postId, commentId }: FindByUserAndTargetParams) {
+  async findByUserAndTarget({
+    userId,
+    postId,
+    commentId,
+  }: FindByUserAndTargetParams) {
     return prisma.like.findFirst({
       where: {
         usuarioId: userId,
@@ -51,7 +58,11 @@ export class PrismaLikesRepository implements LikesRepository {
     })
   }
 
-  async deleteByUserAndTarget({ userId, postId, commentId }: FindByUserAndTargetParams) {
+  async deleteByUserAndTarget({
+    userId,
+    postId,
+    commentId,
+  }: FindByUserAndTargetParams) {
     await prisma.like.deleteMany({
       where: {
         usuarioId: userId,

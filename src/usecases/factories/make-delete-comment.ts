@@ -5,7 +5,10 @@ import { DeleteCommentUseCase } from '../comments/delete-comment.js'
 export function makeDeleteCommentUseCase() {
   const commentsRepository = new PrismaCommentsRepository()
   const usersRepository = new PrismaUsersRepository()
-  const deleteUseCase = new DeleteCommentUseCase(commentsRepository, usersRepository)
+  const deleteUseCase = new DeleteCommentUseCase(
+    commentsRepository,
+    usersRepository,
+  )
 
   return deleteUseCase
 }

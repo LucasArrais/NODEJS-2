@@ -1,11 +1,11 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import type { FastifyRequest, FastifyReply } from 'fastify'
-import { makeCreateLikeUseCase } from '@/usecases/factories/make-create-like.js'
 import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
+import { makeCreateLikeUseCase } from '@/usecases/factories/make-create-like.js'
 
 export async function createLikeController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const createLikeBodySchema = z
     .object({
@@ -19,11 +19,12 @@ export async function createLikeController(
       {
         message:
           'Você deve enviar apenas postPublicId ou commentPublicId (exatamente um)',
-      }
+      },
     )
 
-  const { postPublicId, commentPublicId } =
-    createLikeBodySchema.parse(request.body)
+  const { postPublicId, commentPublicId } = createLikeBodySchema.parse(
+    request.body,
+  )
 
   const requesterPublicId = request.user.sub
 

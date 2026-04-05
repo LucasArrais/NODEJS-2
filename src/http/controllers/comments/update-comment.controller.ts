@@ -1,12 +1,9 @@
-import type { FastifyRequest, FastifyReply } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
-import { makeUpdateCommentUseCase } from '@/usecases/factories/make-update-comment.js'
 import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
+import { makeUpdateCommentUseCase } from '@/usecases/factories/make-update-comment.js'
 
-export async function update(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
+export async function update(request: FastifyRequest, reply: FastifyReply) {
   try {
     const paramsSchema = z.object({
       publicId: z.string(),

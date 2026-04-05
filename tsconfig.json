@@ -25,10 +25,10 @@
     "exactOptionalPropertyTypes": false,
 
     // Style Options
-     "noImplicitReturns": true,
-     "noUnusedLocals": true,
-     "noUnusedParameters": true,
-     "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
 
     // Recommended Options
@@ -43,5 +43,4 @@
       "@/*": ["./src/*"]
     }
   }
-
 }

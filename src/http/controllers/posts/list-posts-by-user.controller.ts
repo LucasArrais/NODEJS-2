@@ -1,13 +1,13 @@
-import type { FastifyRequest, FastifyReply } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { makeListPostsByUserUseCase } from '@/usecases/factories/make-list-posts-by-user.js'
 
 export async function listPostsByUserController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const paramsSchema = z.object({
-    userPublicId: z.string().uuid()
+    userPublicId: z.string().uuid(),
   })
 
   const { userPublicId } = paramsSchema.parse(request.params)

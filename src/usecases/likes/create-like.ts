@@ -1,8 +1,8 @@
-import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
-import type { UsersRepository } from '@/repositories/users-repository.js'
-import type { PostsRepository } from '@/repositories/posts-repository.js'
 import type { CommentsRepository } from '@/repositories/comments-repository.js'
 import type { LikesRepository } from '@/repositories/likes-repository.js'
+import type { PostsRepository } from '@/repositories/posts-repository.js'
+import type { UsersRepository } from '@/repositories/users-repository.js'
+import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 
 interface CreateLikeUseCaseRequest {
   requesterPublicId: string
@@ -15,7 +15,7 @@ export class CreateLikeUseCase {
     private likesRepository: LikesRepository,
     private usersRepository: UsersRepository,
     private postsRepository: PostsRepository,
-    private commentsRepository: CommentsRepository
+    private commentsRepository: CommentsRepository,
   ) {}
 
   async execute({
@@ -23,7 +23,6 @@ export class CreateLikeUseCase {
     postPublicId,
     commentPublicId,
   }: CreateLikeUseCaseRequest) {
-
     if (!postPublicId && !commentPublicId) {
       throw new Error('Like must reference a post or a comment')
     }
@@ -40,7 +39,7 @@ export class CreateLikeUseCase {
 
     let postId: number | null = null
     let commentId: number | null = null
-    
+
     if (postPublicId) {
       const post = await this.postsRepository.findByPublicId(postPublicId)
 
@@ -50,9 +49,10 @@ export class CreateLikeUseCase {
 
       postId = post.id
     }
-    
+
     if (commentPublicId) {
-      const comment = await this.commentsRepository.findByPublicId(commentPublicId)
+      const comment =
+        await this.commentsRepository.findByPublicId(commentPublicId)
 
       if (!comment) {
         throw new ResourceNotFoundError()
@@ -72,13 +72,13 @@ export class CreateLikeUseCase {
 
     const like = await this.likesRepository.create({
       usuario: {
-        connect: { id: user.id }
+        connect: { id: user.id },
       },
-      ...(postId && { 
-        post: { connect: { id: postId } }
+      ...(postId && {
+        post: { connect: { id: postId } },
       }),
-      ...(commentId && { 
-        comment: { connect: { id: commentId } }
+      ...(commentId && {
+        comment: { connect: { id: commentId } },
       }),
     })
 

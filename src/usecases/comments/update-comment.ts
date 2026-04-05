@@ -1,5 +1,5 @@
-import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 import type { CommentsRepository } from '@/repositories/comments-repository.js'
+import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 
 interface UpdateCommentUseCaseRequest {
   publicId: string

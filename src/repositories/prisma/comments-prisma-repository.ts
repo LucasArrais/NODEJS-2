@@ -1,9 +1,8 @@
+import type { Comment, Prisma } from '@/@types/prisma/client.js'
 import { prisma } from '@/libs/prisma.js'
-import type { Prisma, Comment } from '@/@types/prisma/client.js'
 import type { CommentsRepository } from '../comments-repository.js'
 
 export class PrismaCommentsRepository implements CommentsRepository {
-
   async create(data: Prisma.CommentUncheckedCreateInput): Promise<Comment> {
     return prisma.comment.create({
       data,
@@ -17,7 +16,7 @@ export class PrismaCommentsRepository implements CommentsRepository {
   }
 
   async findByPublicIdWithUser(
-    publicId: string
+    publicId: string,
   ): Promise<(Comment & { usuario: { public_id: string } }) | null> {
     return prisma.comment.findUnique({
       where: { public_id: publicId },
@@ -49,7 +48,7 @@ export class PrismaCommentsRepository implements CommentsRepository {
 
   async update(
     publicId: string,
-    data: Prisma.CommentUpdateInput
+    data: Prisma.CommentUpdateInput,
   ): Promise<Comment> {
     return prisma.comment.update({
       where: { public_id: publicId },
@@ -64,28 +63,28 @@ export class PrismaCommentsRepository implements CommentsRepository {
   }
 
   async listWithRelations(page: number) {
-  return prisma.comment.findMany({
-    orderBy: {
-      created_at: 'desc',
-    },
-    take: 10,
-    skip: (page - 1) * 10,
-    select: {
-      public_id: true,
-      conteudo: true,
-      created_at: true,
-      usuario: {
-        select: {
-          public_id: true,
-          name: true,
+    return prisma.comment.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+      take: 10,
+      skip: (page - 1) * 10,
+      select: {
+        public_id: true,
+        conteudo: true,
+        created_at: true,
+        usuario: {
+          select: {
+            public_id: true,
+            name: true,
+          },
+        },
+        post: {
+          select: {
+            public_id: true,
+          },
         },
       },
-      post: {
-        select: {
-          public_id: true,
-        },
-      },
-    },
-  })
-}
+    })
+  }
 }

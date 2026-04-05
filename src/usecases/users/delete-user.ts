@@ -15,7 +15,6 @@ export class DeleteUserUseCase {
     requesterId,
     requesterRole,
   }: DeleteUserUseCaseRequest): Promise<void> {
-
     const user = await this.usersRepository.findByPublicId(userPublicId)
 
     if (!user) {
@@ -23,7 +22,9 @@ export class DeleteUserUseCase {
     }
 
     if (requesterRole !== 'ADMIN' && requesterId !== userPublicId) {
-      const { UnauthorizedError } = await import('../errors/unauthorized-error.js')
+      const { UnauthorizedError } = await import(
+        '../errors/unauthorized-error.js'
+      )
       throw new UnauthorizedError()
     }
 

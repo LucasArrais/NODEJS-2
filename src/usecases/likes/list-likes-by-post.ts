@@ -7,7 +7,7 @@ interface ListLikesByPostRequest {
 export class ListLikesByPostUseCase {
   async execute({ postPublicId }: ListLikesByPostRequest) {
     const post = await prisma.post.findUnique({
-      where: { public_id: postPublicId }
+      where: { public_id: postPublicId },
     })
 
     if (!post) {
@@ -22,10 +22,10 @@ export class ListLikesByPostUseCase {
             id: true,
             name: true,
             email: true,
-            public_id: true
-          }
-        }
-      }
+            public_id: true,
+          },
+        },
+      },
     })
 
     return { likes, total: likes.length }

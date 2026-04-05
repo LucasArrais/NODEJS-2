@@ -7,7 +7,7 @@ interface ListCommentsByUserRequest {
 export class ListCommentsByUserUseCase {
   async execute({ userPublicId }: ListCommentsByUserRequest) {
     const user = await prisma.user.findUnique({
-      where: { public_id: userPublicId }
+      where: { public_id: userPublicId },
     })
 
     if (!user) {
@@ -20,18 +20,18 @@ export class ListCommentsByUserUseCase {
         post: {
           select: {
             public_id: true,
-            titulo: true
-          }
-        }
+            titulo: true,
+          },
+        },
       },
       orderBy: {
-        created_at: 'desc'
-      }
+        created_at: 'desc',
+      },
     })
 
     return {
       comments,
-      total: comments.length
+      total: comments.length,
     }
   }
 }

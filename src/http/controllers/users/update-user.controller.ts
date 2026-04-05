@@ -1,11 +1,11 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { makeUpdateUserUseCase } from '@/usecases/factories/make-update-user.js'
 import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
+import { makeUpdateUserUseCase } from '@/usecases/factories/make-update-user.js'
 
 export async function updateProfileController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const bodySchema = z.object({
@@ -35,26 +35,25 @@ export async function updateProfileController(
 
     return reply.status(200).send({
       message: 'Perfil atualizado com sucesso',
-      user: userWithoutPassword
+      user: userWithoutPassword,
     })
-
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
-      return reply.status(404).send({ 
-        message: 'Usuário não encontrado' 
+      return reply.status(404).send({
+        message: 'Usuário não encontrado',
       })
     }
 
     if (error instanceof z.ZodError) {
-      return reply.status(400).send({ 
+      return reply.status(400).send({
         message: 'Dados inválidos',
-        issues: error.issues
+        issues: error.issues,
       })
     }
 
     console.error('Erro inesperado:', error)
-    return reply.status(500).send({ 
-      message: 'Erro interno do servidor' 
+    return reply.status(500).send({
+      message: 'Erro interno do servidor',
     })
   }
 }

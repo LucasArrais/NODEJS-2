@@ -1,13 +1,13 @@
-import type { FastifyRequest, FastifyReply } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { makeListCommentsByPostUseCase } from '@/usecases/factories/make-list-comments-by-post.js'
 
 export async function listCommentsByPostController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const paramsSchema = z.object({
-    postPublicId: z.string().uuid()
+    postPublicId: z.string().uuid(),
   })
 
   const { postPublicId } = paramsSchema.parse(request.params)

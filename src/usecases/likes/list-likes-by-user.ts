@@ -7,7 +7,7 @@ interface ListLikesByUserRequest {
 export class ListLikesByUserUseCase {
   async execute({ userPublicId }: ListLikesByUserRequest) {
     const user = await prisma.user.findUnique({
-      where: { public_id: userPublicId }
+      where: { public_id: userPublicId },
     })
 
     if (!user) {
@@ -20,21 +20,21 @@ export class ListLikesByUserUseCase {
         post: {
           select: {
             public_id: true,
-            titulo: true
-          }
+            titulo: true,
+          },
         },
         comment: {
           select: {
             public_id: true,
-            conteudo: true
-          }
-        }
-      }
+            conteudo: true,
+          },
+        },
+      },
     })
 
     return {
       likes,
-      total: likes.length
+      total: likes.length,
     }
   }
 }

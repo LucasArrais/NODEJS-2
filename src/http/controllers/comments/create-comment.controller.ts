@@ -1,7 +1,7 @@
-import type { FastifyRequest, FastifyReply } from 'fastify'
-import { makeCreateCommentUseCase } from '@/usecases/factories/make-create-comments.js'
-import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
+import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
+import { makeCreateCommentUseCase } from '@/usecases/factories/make-create-comments.js'
 
 export async function create(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -10,8 +10,9 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
       postPublicId: z.string(),
     })
 
-    const { conteudo, postPublicId } =
-      createCommentBodySchema.parse(request.body)
+    const { conteudo, postPublicId } = createCommentBodySchema.parse(
+      request.body,
+    )
 
     const loggedUser = request.user as {
       sub: string

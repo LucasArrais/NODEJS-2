@@ -24,7 +24,6 @@ export class CreatePostUseCase {
     conteudo,
     userPublicId,
   }: CreatePostRequest): Promise<CreatePostResponse> {
-
     const user = await this.usersRepository.findBy({
       public_id: userPublicId,
     })

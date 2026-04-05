@@ -7,7 +7,7 @@ interface ListLikesByCommentRequest {
 export class ListLikesByCommentUseCase {
   async execute({ commentPublicId }: ListLikesByCommentRequest) {
     const comment = await prisma.comment.findUnique({
-      where: { public_id: commentPublicId }
+      where: { public_id: commentPublicId },
     })
 
     if (!comment) {
@@ -22,15 +22,15 @@ export class ListLikesByCommentUseCase {
             id: true,
             name: true,
             email: true,
-            public_id: true
-          }
-        }
-      }
+            public_id: true,
+          },
+        },
+      },
     })
 
     return {
       likes,
-      total: likes.length
+      total: likes.length,
     }
   }
 }

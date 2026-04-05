@@ -1,6 +1,6 @@
+import type { CommentsRepository } from '@/repositories/comments-repository.js'
 import type { LikesRepository } from '@/repositories/likes-repository.js'
 import type { PostsRepository } from '@/repositories/posts-repository.js'
-import type { CommentsRepository } from '@/repositories/comments-repository.js'
 import type { UsersRepository } from '@/repositories/users-repository.js'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error.js'
 import { UnauthorizedError } from '../errors/unauthorized-error.js'
@@ -16,7 +16,7 @@ export class DeleteLikeUseCase {
     private likesRepository: LikesRepository,
     private usersRepository: UsersRepository,
     private postsRepository: PostsRepository,
-    private commentsRepository: CommentsRepository
+    private commentsRepository: CommentsRepository,
   ) {}
 
   async execute({
@@ -24,7 +24,6 @@ export class DeleteLikeUseCase {
     postPublicId,
     commentPublicId,
   }: DeleteLikeUseCaseRequest): Promise<void> {
-
     const user = await this.usersRepository.findByPublicId(userId)
     if (!user) {
       throw new ResourceNotFoundError()
@@ -42,7 +41,8 @@ export class DeleteLikeUseCase {
     }
 
     if (commentPublicId) {
-      const comment = await this.commentsRepository.findByPublicId(commentPublicId)
+      const comment =
+        await this.commentsRepository.findByPublicId(commentPublicId)
       if (!comment) {
         throw new ResourceNotFoundError()
       }

@@ -13,16 +13,16 @@ export class GetCommentUseCase {
           select: {
             public_id: true,
             name: true,
-            email: true
-          }
+            email: true,
+          },
         },
         post: {
           select: {
             public_id: true,
-            titulo: true
-          }
-        }
-      }
+            titulo: true,
+          },
+        },
+      },
     })
 
     if (!comment) {

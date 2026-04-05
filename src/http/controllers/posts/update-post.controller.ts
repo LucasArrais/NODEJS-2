@@ -1,12 +1,12 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+import z from 'zod'
 import { ResourceNotFoundError } from '@/usecases/errors/resource-not-found-error.js'
 import { UnauthorizedError } from '@/usecases/errors/unauthorized-error.js'
 import { makeUpdatePostUseCase } from '@/usecases/factories/make-update-post.js'
-import type { FastifyRequest, FastifyReply } from 'fastify'
-import z from 'zod'
 
 export async function updatePostController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const paramsSchema = z.object({
@@ -37,7 +37,6 @@ export async function updatePostController(
     })
 
     return reply.status(200).send(post)
-
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: 'Post not found' })
@@ -48,9 +47,9 @@ export async function updatePostController(
     }
 
     if (error instanceof z.ZodError) {
-      return reply.status(400).send({ 
-        message: 'Invalid data', 
-        issues: error.issues 
+      return reply.status(400).send({
+        message: 'Invalid data',
+        issues: error.issues,
       })
     }
 

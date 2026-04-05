@@ -16,7 +16,6 @@ export class GetPostUseCase {
   async execute({
     publicId,
   }: GetPostUseCaseRequest): Promise<GetPostUseCaseResponse> {
-
     const post = await this.postsRepository.findByPublicId(publicId)
 
     if (!post) {

@@ -1,11 +1,8 @@
-import type { FastifyRequest, FastifyReply } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
 import { makeListCommentsUseCase } from '@/usecases/factories/make-list-comments.js'
 
-export async function list(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
+export async function list(request: FastifyRequest, reply: FastifyReply) {
   const querySchema = z.object({
     page: z.coerce.number().min(1).default(1),
   })
