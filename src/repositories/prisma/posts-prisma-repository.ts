@@ -19,6 +19,7 @@ export class PrismaPostsRepository implements PostsRepository {
       },
     })
   }
+
   async findManyByUserId(userId: number) {
     return prisma.post.findMany({
       where: { usuarioId: userId },
@@ -36,5 +37,39 @@ export class PrismaPostsRepository implements PostsRepository {
     await prisma.post.delete({
       where: { public_id: publicId },
     })
+  }
+
+  async findTopLikedPostsInLast24Hours() {
+    const twentyFourHoursAgo = new Date()
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24)
+
+    const posts = await prisma.post.findMany({
+      where: {
+        created_at: {
+          gte: twentyFourHoursAgo
+        }
+      },
+      include: {
+        usuario: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        _count: {
+          select: {
+            likes: true
+          }
+        }
+      },
+      orderBy: {
+        likes: {
+          _count: 'desc'
+        }
+      },
+      take: 5
+    })
+
+    return posts
   }
 }

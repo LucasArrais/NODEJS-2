@@ -1,12 +1,15 @@
-import type { Prisma, User } from '@/@types/prisma/client.js'
+import type { Prisma } from '@/@types/prisma/client.js'
 
 export interface UsersRepository {
-  create(data: Prisma.UserCreateInput): Promise<User>
-  findByEmail(email: string): Promise<User | null>
-  findBy(where: Prisma.UserWhereInput): Promise<User | null>
-  list(): Promise<User[]>
+  create(data: Prisma.UserCreateInput): Promise<any>
+  findByEmail(email: string): Promise<any>
+  findByPublicId(publicId: string): Promise<any>
+  findAll(): Promise<Array<{
+    id: number
+    name: string
+    email: string
+    public_id: string
+  }>>
+  update(publicId: string, data: Prisma.UserUpdateInput): Promise<any>
   delete(publicId: string): Promise<void>
-  update(id: number, data: Prisma.UserUpdateInput): Promise<User>
-  findByPublicId(publicId: string): Promise<User | null>
-  findById(id: number): Promise<User | null>
 }
