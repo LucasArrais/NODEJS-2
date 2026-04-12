@@ -20,6 +20,8 @@ model User {
   password  String
   photo     String?
   role      USER_ROLE  @default(DEFAULT)
+  resetToken        String?
+  resetTokenExpires DateTime?
 
   posts     Post[]
   comments  Comment[]
