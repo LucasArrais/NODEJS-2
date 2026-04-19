@@ -24,9 +24,7 @@ export class CreatePostUseCase {
     conteudo,
     userPublicId,
   }: CreatePostRequest): Promise<CreatePostResponse> {
-    const user = await this.usersRepository.findBy({
-      public_id: userPublicId,
-    })
+    const user = await this.usersRepository.findByPublicId(userPublicId)
 
     if (!user) {
       throw new ResourceNotFoundError()

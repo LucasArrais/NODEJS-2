@@ -1,5 +1,4 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { UserPresenter } from '@/http/presenters/user-presenter.js'
 import { makeListUsersUseCase } from '@/usecases/factories/make-list-users.js'
 
 export async function list(_request: FastifyRequest, reply: FastifyReply) {
@@ -8,7 +7,16 @@ export async function list(_request: FastifyRequest, reply: FastifyReply) {
 
     const { users } = await listUsersUseCase.execute()
 
-    return reply.status(200).send(UserPresenter.toHTTP(users))
+    const usersHTTP = users.map(user => ({
+      id: user.id,
+      public_id: user.public_id,
+      name: user.name,
+      email: user.email,
+      photo: null,
+      role: 'DEFAULT'
+    }))
+
+    return reply.status(200).send(usersHTTP)
   } catch (error) {
     throw error
   }
